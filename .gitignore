@@ -1,0 +1,14 @@
+# --- Mac System Files ---
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# --- Python Cache ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual Environments ---
+venv/
+env/
+.env
