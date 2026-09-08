@@ -16,13 +16,13 @@ import theme
 theme.init_fonts()
 ctk.set_appearance_mode("Dark")
 
-# the local model doing the routing. any instruct model works — swap the name
+# the local model doing the routing. any instruct model works, swap the name
 # and `ollama pull` it. qwen2.5:7b is the sweet spot on 16gb: smart enough to
 # read a doc and actually get the category right, fast enough to not crawl.
 OLLAMA_MODEL = "qwen2.5:7b"
 
 # the model is forced to answer in this exact shape. category is an enum, so it
-# literally can't invent a folder that doesn't exist — no more cleaning up
+# literally can't invent a folder that doesn't exist, no more cleaning up
 # garbage categories after the fact.
 ROUTING_SCHEMA = {
     "type": "object",
@@ -45,7 +45,7 @@ class FrankenSorterApp(ctk.CTk):
         self.minsize(700, 760)
 
         # keep state on the instance so the buttons can lock themselves while a
-        # sort is mid-flight — otherwise people spam-click and kick off two runs.
+        # sort is mid-flight, otherwise people spam-click and kick off two runs.
         self.source_folder = ""
 
         # default to the desktop. expanduser sorts out ~ on both mac and windows
@@ -71,7 +71,7 @@ class FrankenSorterApp(ctk.CTk):
         return theme.PALETTES[self.mode]
 
     def build_fonts(self):
-        """bricolage reads, martian counts — see theme.py for the full mapping."""
+        """bricolage reads, martian counts, see theme.py for the full mapping."""
         self.font_wordmark = ctk.CTkFont(family=theme.FONT_MONO, size=20, weight="bold")
         self.font_tagline = ctk.CTkFont(family=theme.FONT_BODY, size=14)
         self.font_eyebrow = ctk.CTkFont(family=theme.FONT_MONO, size=11, weight="bold")
@@ -128,7 +128,7 @@ class FrankenSorterApp(ctk.CTk):
     def draw_tagline(self):
         """the one brand flourish: a chartreuse band swiped under a single word.
         css does this with a background gradient; tk can't, so i just draw a
-        rectangle behind the text on a canvas — same look, done once, on the hero."""
+        rectangle behind the text on a canvas, same look, done once, on the hero."""
         c = self.tagline_canvas
         c.delete("all")
         palette = self.palette
@@ -269,7 +269,7 @@ class FrankenSorterApp(ctk.CTk):
 
     # --- thread-safe ui updates ---
     # anything touching a widget has to run on the main thread. the worker
-    # thread hands updates back with self.after(0, ...) — poke the ui straight
+    # thread hands updates back with self.after(0, ...), poke the ui straight
     # from a sub-thread and it crashes on macos.
 
     def update_status(self, text, kind):
@@ -304,7 +304,7 @@ class FrankenSorterApp(ctk.CTk):
     # --- core logic ---
 
     def check_ai_connection(self):
-        """on startup, make sure ollama is up and the model is actually pulled —
+        """on startup, make sure ollama is up and the model is actually pulled.
         the two most common 'why isn't it working' reasons, caught upfront."""
         try:
             names = [m.model for m in ollama.list().models]
@@ -313,7 +313,7 @@ class FrankenSorterApp(ctk.CTk):
             else:
                 self.update_status(f"Run: ollama pull {OLLAMA_MODEL}", "neg")
         except Exception:
-            self.update_status("Local AI offline — start Ollama", "neg")
+            self.update_status("Local AI offline, start Ollama", "neg")
 
     def select_source(self):
         folder = ctk.filedialog.askdirectory(title="Choose the folder to sort")
@@ -331,7 +331,7 @@ class FrankenSorterApp(ctk.CTk):
             self.log(f"Destination set to {folder}")
 
     def request_stop(self):
-        """flag the run to bail out — but only after the current file finishes,
+        """flag the run to bail out, but only after the current file finishes,
         so we never interrupt a move half-done and lose a file."""
         if self.is_running:
             self.stop_requested = True
@@ -366,9 +366,9 @@ class FrankenSorterApp(ctk.CTk):
         we're not shoving a whole textbook into the prompt."""
         ext = self.get_real_extension(filename)
 
-        # don't even try to open something huge — it'll just hang the app.
+        # don't even try to open something huge, it'll just hang the app.
         if os.path.getsize(path) > 50 * 1024 * 1024:  # 50 mb
-            self.log("Skipped — file is larger than 50MB")
+            self.log("Skipped, file is larger than 50MB")
             return None
 
         try:
@@ -401,14 +401,14 @@ class FrankenSorterApp(ctk.CTk):
 
             return None
         except Exception:
-            self.log("Couldn't read file — skipping")
+            self.log("Couldn't read file, skipping")
             return None
 
     def get_ai_decision(self, filename, content):
         """hybrid router: regex grabs the dead-obvious stuff instantly, then the
         model handles the judgment calls. it's pinned to a json schema, so it
         can't wander off and hand back a paragraph instead of an answer."""
-        # fast path — a real course code in the name is a school file, full stop,
+        # fast path, a real course code in the name is a school file, full stop,
         # and i trust that over whatever the model thinks. the catch: "scan0042"
         # and "IMG_1234" look exactly like course codes, so blocklist the usual
         # camera/scanner/generic junk prefixes before trusting the match.
@@ -424,12 +424,12 @@ class FrankenSorterApp(ctk.CTk):
         school_keywords = ["assignment", "rubric", "lecture", "homework", "math", "calculus", "course", "exam", "syllabus"]
         is_obvious_school = any(word in filename.lower() for word in school_keywords)
 
-        # slow path — hand the model the name plus a peek at the contents and let
+        # slow path, hand the model the name plus a peek at the contents and let
         # it reason about where the file actually belongs.
         system_prompt = (
             "You sort files into folders. Read the filename and the text sample, "
-            "then decide where the file belongs based on what it's actually about "
-            "— not just its name. Answer in the given JSON schema, nothing else."
+            "then decide where the file belongs based on what it's actually about, "
+            "not just its name. Answer in the given JSON schema, nothing else."
         )
         user_prompt = f"""Filename: {filename}
 Text sample: {content[:1000] if content else '(no readable text)'}
@@ -452,7 +452,7 @@ new_name: a short, readable PascalCase name for the file. no extension."""
                     {"role": "user", "content": user_prompt},
                 ],
                 format=ROUTING_SCHEMA,        # forces valid json in the exact shape we want
-                options={"temperature": 0},   # deterministic — the same file sorts the same way every time
+                options={"temperature": 0},   # deterministic, the same file sorts the same way every time
             )
             data = json.loads(response["message"]["content"])
 
@@ -473,7 +473,7 @@ new_name: a short, readable PascalCase name for the file. no extension."""
             if category not in VALID_CATEGORIES:
                 category = "UNSORTED"
 
-            # never trust the model with the extension — strip anything illegal
+            # never trust the model with the extension, strip anything illegal
             # from its name and staple the real extension back on.
             base = os.path.splitext(new_name)[0] if new_name else os.path.splitext(filename)[0]
             base = re.sub(r'[\\/:*?"<>|]', "", base).strip()
@@ -481,7 +481,7 @@ new_name: a short, readable PascalCase name for the file. no extension."""
 
             return {"category": category, "subject": subject, "new_name": new_name}
         except Exception:
-            self.log("Couldn't read the model's answer — leaving this one unsorted")
+            self.log("Couldn't read the model's answer, leaving this one unsorted")
             return None
 
     def organize_logic(self):
@@ -494,13 +494,13 @@ new_name: a short, readable PascalCase name for the file. no extension."""
 
             total_files = len(files)
             if total_files == 0:
-                self.log("Nothing to sort — folder is empty.")
+                self.log("Nothing to sort, folder is empty.")
                 return
 
             self.log(f"Sorting {total_files} files…")
 
             for index, filename in enumerate(files):
-                # bail here if stop was pressed — safe spot, between files.
+                # bail here if stop was pressed, safe spot, between files.
                 if self.stop_requested: break
 
                 path = os.path.join(self.source_folder, filename)

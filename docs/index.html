@@ -95,7 +95,7 @@ h1.title{
 /* ---- demo frame (real gif, no fake window chrome) ---------------------- */
 .demo{margin:52px 0 0}
 .frame{border:1px solid var(--rule-2);border-radius:12px;overflow:hidden;background:var(--surface)}
-.frame img{width:100%;background:var(--surface)}
+.frame img,.frame video{width:100%;display:block;background:var(--surface)}
 
 /* ---- section shell ----------------------------------------------------- */
 section{padding:66px 0}
@@ -175,7 +175,7 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
     <div class="eyebrow">Python · local LLM desktop app</div>
     <h1 class="title">FrankenSorter
       <svg class="swipe" viewBox="0 0 320 24" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M6,17 C70,7 128,20 190,11 C240,4 288,15 314,9" fill="none" stroke="var(--brand)" stroke-width="9" stroke-linecap="round"/>
+        <path d="M6,12 L314,12" fill="none" stroke="var(--brand)" stroke-width="9" stroke-linecap="round"/>
       </svg>
     </h1>
     <p class="lede">reads each document and files it under school, work, personal, or finance. locally, and nothing gets uploaded.</p>
@@ -186,7 +186,10 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
 
     <div class="demo">
       <div class="frame">
-        <img src="assets/ssdemo.gif" alt="FrankenSorter sorting files into folders" width="700" loading="lazy">
+        <video class="demo-video" width="2030" height="1190" muted loop playsinline preload="auto"
+               poster="assets/demo-poster.jpg" aria-label="FrankenSorter sorting a folder of documents">
+          <source src="assets/FrankenSorter-demo.mp4" type="video/mp4">
+        </video>
       </div>
     </div>
   </div>
@@ -278,6 +281,17 @@ python3 FrankenSorter.py</pre>
 
 <script>
 (function(){
+  // play the demo only when motion is welcome; reduced-motion keeps the clean poster + controls
+  try{
+    var vid=document.querySelector(".demo-video");
+    if(vid){
+      if(matchMedia("(prefers-reduced-motion: reduce)").matches){
+        vid.setAttribute("controls","");
+      }else{
+        var pr=vid.play(); if(pr&&pr.catch){ pr.catch(function(){ vid.setAttribute("controls",""); }); }
+      }
+    }
+  }catch(e){}
   var root=document.documentElement, btn=document.getElementById("themeToggle");
   function label(){ btn.textContent = root.getAttribute("data-theme")==="dark" ? "light" : "dark"; }
   try{ var saved=localStorage.getItem("fs-theme"); if(saved){ root.setAttribute("data-theme",saved); } }catch(e){}

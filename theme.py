@@ -1,6 +1,6 @@
 """
 Brand identity for FrankenSorter: Bricolage Grotesque + Martian Mono on the
-"Sulfur on Chalk" palette. See brandkit for the source spec — this module
+"Sulfur on Chalk" palette. See brandkit for the source spec, this module
 adapts it to a Tk/CustomTkinter runtime (private, per-process font loading;
 color tokens as plain dicts instead of CSS variables).
 """
@@ -63,7 +63,7 @@ def _register_linux(path):
 
 def register_fonts():
     """
-    Loads the bundled brand fonts privately for this process only — no admin
+    Loads the bundled brand fonts privately for this process only, no admin
     rights, no writing into the OS font library. Returns True if every file
     registered; callers should fall back to system fonts on False.
     """
@@ -125,6 +125,6 @@ PALETTES = {"dark": DARK, "light": LIGHT}
 
 
 def spaced(text, gap=" "):
-    """Fakes CSS letter-spacing for short uppercase eyebrow labels only —
+    """Fakes CSS letter-spacing for short uppercase eyebrow labels only.
     Tk has no per-character tracking control."""
     return gap.join(text)
