@@ -6,7 +6,7 @@
 ![Ollama](https://img.shields.io/badge/Local_AI-Ollama_Qwen2.5_7B-black?style=for-the-badge)
 ![CustomTkinter](https://img.shields.io/badge/GUI-CustomTkinter-00f0ff?style=for-the-badge)
 <div align="center">
-  <video src="https://github.com/zakiaminn/FrankenSorter/raw/main/assets/FrankenSorter-demo.mp4" poster="https://github.com/zakiaminn/FrankenSorter/raw/main/assets/demo-poster.jpg" width="700" autoplay loop muted playsinline></video>
+  <img src="assets/frankensorter-demo.gif" alt="FrankenSorter sorting a folder of documents" width="760">
 </div>
 
 point it at a folder full of random documents and it reads each one, works out whether it's school, work, personal, or finance, and files it into the right folder with a clean name. nothing leaves your machine. no api key, no subscription, no upload.
