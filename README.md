@@ -5,10 +5,10 @@
 ![Ollama](https://img.shields.io/badge/Local_AI-Ollama_Qwen2.5_7B-black?style=for-the-badge)
 ![CustomTkinter](https://img.shields.io/badge/GUI-CustomTkinter-00f0ff?style=for-the-badge)
 <div align="center">
-  <img src="assets/ssdemo.png" alt="Franken-Sorter UI Screenshot" width="700">
+  <img src="assets/ssdemo.gif" alt="Franken-Sorter demo" width="700">
 </div>
 
-FrankenSorter is a privacy-first, zero-cloud desktop application that brings order to chaotic file directories. By stitching together deterministic Regular Expressions (Regex), unstructured document parsing (ETL), and a locally hosted Large Language Model (Llama 3.2 via Ollama), this tool autonomously analyzes document content to dynamically route and rename files into structured hierarchies.
+FrankenSorter is a privacy-first, zero-cloud desktop application that brings order to chaotic file directories. By stitching together deterministic Regular Expressions (Regex), unstructured document parsing (ETL), and a locally hosted Large Language Model (Qwen2.5 7B via Ollama), this tool autonomously analyzes document content to dynamically route and rename files into structured hierarchies.
 
 ## Technical Highlights
 
@@ -29,7 +29,7 @@ FrankenSorter is a privacy-first, zero-cloud desktop application that brings ord
 
 **2. Clone & Install Dependencies**
 ```bash
-git clone [https://github.com/zakiaminn/FrankenSorter.git](https://github.com/zakiaminn/FrankenSorter.git)
+git clone https://github.com/zakiaminn/FrankenSorter.git
 cd FrankenSorter
 pip install -r requirements.txt
 ```
