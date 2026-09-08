@@ -1,5 +1,6 @@
-# FrankenSorter 
-**Neural Directory Engine & Local AI File Router**
+# FrankenSorter
+
+**a local ai file sorter — reads your documents and files them away, all on your own machine**
 
 ![Python](https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge&logo=python)
 ![Ollama](https://img.shields.io/badge/Local_AI-Ollama_Qwen2.5_7B-black?style=for-the-badge)
@@ -8,48 +9,52 @@
   <img src="assets/ssdemo.gif" alt="Franken-Sorter demo" width="700">
 </div>
 
-FrankenSorter is a privacy-first, zero-cloud desktop application that brings order to chaotic file directories. By stitching together deterministic Regular Expressions (Regex), unstructured document parsing (ETL), and a locally hosted Large Language Model (Qwen2.5 7B via Ollama), this tool autonomously analyzes document content to dynamically route and rename files into structured hierarchies.
+point it at a folder full of random documents and it reads each one, works out whether it's school, work, personal, or finance, and files it into the right folder with a clean name. nothing leaves your machine — no api key, no subscription, no upload.
 
-## Technical Highlights
+it leans on regex for the obvious calls and a local language model (qwen2.5 7b through ollama) for everything it can't pattern-match.
 
-* **100% Local Inference:** Utilizes Ollama to run Qwen2.5 7B entirely on-device, ensuring zero API rate limits, zero subscription costs, and total data privacy.
-* **Hybrid Routing Heuristics:** Employs a fallback mechanism where strict deterministic Regex intercepts standard file patterns (e.g., academic course codes like `PROG23672`) before passing unstructured edge cases to the LLM.
-* **Multi-Format ETL Pipeline:** Extracts metadata and text chunks from `.pdf`, `.docx`, `.pptx`, and `.xlsx` files using a suite of Python libraries. Implements defensive programming (`getattr` attribute checks) to handle malformed third-party object graphs gracefully.
-* **Asynchronous GUI & Safe Halting:** Built with `customtkinter` and `threading` to decouple heavy I/O and AI inference from the main UI thread, ensuring the application remains responsive and allows for non-destructive process interruptions.
-* **Schema-Enforced Structured Outputs:** Constrains the model with a JSON schema (category as an enum) and `temperature=0`, so routing is deterministic and the model physically cannot return a folder that doesn't exist — no fragile parsing of conversational fluff.
+## what makes it work
 
-## 🛠️ Installation & Setup
+* **100% local.** the model runs on your own machine through ollama. no rate limits, no subscription, nothing gets uploaded.
+* **regex first, model second.** the obvious stuff never touches the llm — a course code like `PROG23672` in the filename is school, full stop. junk prefixes like `IMG` or `SCAN` are blocklisted so a photo doesn't read as a course code. everything regex can't call falls through to the model.
+* **the model can't go off-script.** it answers against a json schema where the category is an enum, so it literally can't hand back a folder that doesn't exist. temperature's pinned to 0, so the same file sorts the same way every time — no digging a real answer out of conversational fluff.
+* **reads real documents.** pulls text from `.pdf`, `.docx`, `.pptx`, and `.xlsx`. handles malformed files without crashing (getattr's its way through the weird ones) and skips anything over 50mb so the app never hangs.
+* **the ui never freezes.** built with customtkinter, and the sorting runs on a background thread. the stop button halts cleanly between files, so nothing's ever left half-moved.
 
-**1. Install Local AI Engine (Ollama)**
-* Download and install [Ollama for Mac/Windows](https://ollama.com/).
-* Open your terminal and pull the LLM model:
-  ```bash
-  ollama pull qwen2.5:7b
-  ```
+## setup
 
-**2. Clone & Install Dependencies**
+**1. install ollama and pull the model**
+
+grab [ollama](https://ollama.com/), then:
+```bash
+ollama pull qwen2.5:7b
+```
+
+**2. clone and install the deps**
 ```bash
 git clone https://github.com/zakiaminn/FrankenSorter.git
 cd FrankenSorter
 pip install -r requirements.txt
 ```
-*(Dependencies include: `customtkinter`, `ollama`, `pdfplumber`, `python-docx`, `python-pptx`, `openpyxl`)*
+deps: `customtkinter`, `ollama`, `pdfplumber`, `python-docx`, `python-pptx`, `openpyxl`
 
-**3. Run the Application**
+**3. run it**
 ```bash
 python3 FrankenSorter.py
 ```
 
-## How it Works
+## how it works
 
-1. **Extraction:** FrankenSorter reads the first 1,200 characters of a document (avoiding context-window overflow).
-2. **Analysis:** Text is fed to Qwen2.5 7B with a strict JSON schema requesting categorization (School, Work, Personal, Finance) and subject generation.
-3. **Execution:** FrankenSorter generates directories dynamically based on the AI's output, renames the file to PascalCase, resolves any naming collisions using epoch timestamps, and executes the file move.
+1. **extract** — reads the first ~1200 characters of a file. enough to know what it is, small enough to not blow past the context window.
+2. **analyze** — hands that text to qwen2.5 7b with the schema and gets back a category (school / work / personal / finance), a subject, and a cleaned-up name.
+3. **execute** — makes the category folder if it isn't there yet, renames the file to pascalcase, breaks any name collisions with an epoch timestamp, and moves it.
 
-## Future Roadmap
-* Support for nested sub-directory scanning (recursive routing).
-* Implementation of an "Undo Last Sort" feature mapping via JSON history logs.
-* OCR implementation (Tesseract) for analyzing image-only (`.jpg`, `.png`) documents.
+## roadmap
+
+* recursive scanning into subfolders
+* an "undo last sort" — keep a small json history log and reverse it
+* ocr (tesseract) so it can handle image-only files like `.jpg` and `.png`
 
 ---
-*Created as a portfolio project showcasing modern Python architecture, UI/UX design, and practical AI application.*
+
+*built as a portfolio project — modern python, a bit of ui/ux, and a genuinely useful local-llm workflow.*
