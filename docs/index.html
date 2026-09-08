@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FrankenSorter — a local AI file sorter</title>
-<meta name="description" content="FrankenSorter is a privacy-first desktop app that reads your documents and files them away — locally, with regex and a local LLM. No cloud, no upload.">
-<meta property="og:title" content="FrankenSorter — a local AI file sorter">
+<title>FrankenSorter, a local AI file sorter</title>
+<meta name="description" content="FrankenSorter is a privacy-first desktop app that reads your documents and files them away locally, using regex and a local LLM. No cloud, no upload.">
+<meta property="og:title" content="FrankenSorter, a local AI file sorter">
 <meta property="og:description" content="Reads your documents and files them away, all on your own machine. Regex for the obvious calls, a local model for the rest.">
 <meta property="og:type" content="website">
 
@@ -18,6 +18,7 @@
 @font-face{font-family:"Martian Mono";src:url("assets/fonts/MartianMono-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
 
 /* ---- tokens: "Sulfur on Chalk" ----------------------------------------- */
+/* radius scale is deliberate: containers 12, controls 8, inline 6 */
 :root{                               /* dark is the default, like the app */
   --bg:#0E0E0A; --surface:#17170F; --surface-2:#212118;
   --ink:#EDEDE0; --ink-2:#9C9A86; --ink-3:#86846F;
@@ -55,18 +56,17 @@ header.bar{
   backdrop-filter:blur(8px); border-bottom:1px solid var(--rule);
 }
 .bar-in{display:flex;align-items:center;justify-content:space-between;height:60px}
-.wordmark{font-family:var(--mono);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
-.wordmark .dot{color:var(--brand-ink)}
+.wordmark{font-family:var(--mono);font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
 .bar-nav{display:flex;align-items:center;gap:8px}
 .navlink{
   font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.12em;
-  color:var(--ink-2);text-decoration:none;padding:8px 12px;border-radius:6px;
+  color:var(--ink-2);text-decoration:none;padding:8px 12px;border-radius:8px;
 }
 .navlink:hover{color:var(--ink);background:var(--surface)}
 #themeToggle{
   font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.12em;
   color:var(--ink-2);background:transparent;border:1px solid var(--rule-2);
-  border-radius:6px;padding:8px 12px;cursor:pointer;
+  border-radius:8px;padding:8px 12px;cursor:pointer;
 }
 #themeToggle:hover{color:var(--ink);border-color:var(--ink-3)}
 
@@ -78,8 +78,7 @@ h1.title{
   font-size:clamp(34px,11vw,104px);margin:0;position:relative;display:inline-block;max-width:100%;
 }
 .swipe{position:absolute;left:-2%;bottom:-.16em;width:104%;height:.34em;pointer-events:none}
-.lede{font-size:clamp(19px,2.5vw,25px);color:var(--ink-2);max-width:40ch;margin:26px 0 8px;line-height:1.4}
-.sub{font-size:16px;color:var(--ink-3);max-width:52ch;margin:0 0 34px}
+.lede{font-size:clamp(19px,2.5vw,25px);color:var(--ink-2);max-width:42ch;margin:26px 0 34px;line-height:1.4}
 .cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 .btn{
   font-family:var(--mono);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
@@ -93,39 +92,34 @@ h1.title{
 .btn-ghost:hover{border-color:var(--ink-3)}
 .btn .arw{font-family:var(--sans);font-weight:700}
 
-/* ---- demo frame -------------------------------------------------------- */
+/* ---- demo frame (real gif, no fake window chrome) ---------------------- */
 .demo{margin:52px 0 0}
 .frame{border:1px solid var(--rule-2);border-radius:12px;overflow:hidden;background:var(--surface)}
-.frame-bar{display:flex;align-items:center;gap:14px;padding:11px 16px;border-bottom:1px solid var(--rule)}
-.dots{display:flex;gap:7px}
-.dots i{width:10px;height:10px;border-radius:50%;background:var(--rule-2);display:block}
-.frame-name{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.04em}
-.frame img{width:100%;background:#000}
+.frame img{width:100%;background:var(--surface)}
 
 /* ---- section shell ----------------------------------------------------- */
 section{padding:66px 0}
-.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:34px;flex-wrap:wrap}
+.sec-head{margin-bottom:34px}
 .sec-head h2{font-family:var(--sans);font-weight:700;font-size:clamp(26px,4vw,36px);letter-spacing:-.01em;margin:0}
-.sec-num{font-family:var(--mono);font-size:12px;color:var(--brand-ink);letter-spacing:.1em}
 
 /* ---- features ---------------------------------------------------------- */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden}
 .card{background:var(--bg);padding:26px 24px}
+.card.wide{grid-column:1/-1;background:var(--brand-wash)}   /* one tinted cell for rhythm, flat fill */
 .card .k{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.13em;color:var(--brand-ink);margin-bottom:12px}
 .card p{margin:0;color:var(--ink-2);font-size:15.5px}
-.card code{font-family:var(--mono);font-size:.86em;color:var(--ink);background:var(--surface-2);padding:1px 6px;border-radius:4px}
-.card.wide{grid-column:1/-1}
+.card.wide p{color:var(--ink)}
+.card code{font-family:var(--mono);font-size:.86em;color:var(--ink);background:var(--surface-2);padding:1px 6px;border-radius:6px}
+.card.wide code{background:color-mix(in srgb,var(--brand) 22%,transparent)}
 
 /* ---- steps ------------------------------------------------------------- */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
 .step{border-top:2px solid var(--brand);padding-top:18px}
-.step .n{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--brand-ink);letter-spacing:.1em}
-.step h3{font-family:var(--sans);font-weight:600;font-size:19px;margin:10px 0 8px}
+.step h3{font-family:var(--sans);font-weight:600;font-size:20px;margin:0 0 8px}
 .step p{margin:0;color:var(--ink-2);font-size:15px}
 
 /* ---- setup / code ------------------------------------------------------ */
 .setup-in{border:1px solid var(--rule-2);border-radius:12px;overflow:hidden;background:var(--surface)}
-.setup-in .frame-bar{background:var(--surface)}
 pre{margin:0;padding:24px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:2;color:var(--ink)}
 pre .c{color:var(--ink-3)}
 pre .p{color:var(--brand-ink)}
@@ -137,10 +131,20 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
 .foot .by{font-family:var(--sans);font-weight:600;font-size:18px}
 .foot .meta{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.12em;margin-top:8px}
 .foot-links{display:flex;gap:8px;flex-wrap:wrap}
-.chip{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-2);text-decoration:none;border:1px solid var(--rule-2);border-radius:6px;padding:9px 13px}
+.chip{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-2);text-decoration:none;border:1px solid var(--rule-2);border-radius:8px;padding:9px 13px}
 .chip:hover{color:var(--ink);border-color:var(--ink-3)}
 .chip.brand{color:var(--brand-fg);background:var(--brand);border-color:var(--brand)}
 .chip.brand:hover{background:#e6f24d}
+
+/* ---- one motivated motion: hero entrance, reduced-motion safe ---------- */
+@media (prefers-reduced-motion: no-preference){
+  .hero .eyebrow{animation:rise .7s cubic-bezier(.16,1,.3,1) both;animation-delay:.02s}
+  .hero h1.title{animation:rise .7s cubic-bezier(.16,1,.3,1) both;animation-delay:.09s}
+  .hero .lede{animation:rise .7s cubic-bezier(.16,1,.3,1) both;animation-delay:.17s}
+  .hero .cta{animation:rise .7s cubic-bezier(.16,1,.3,1) both;animation-delay:.25s}
+  .hero .demo{animation:rise .8s cubic-bezier(.16,1,.3,1) both;animation-delay:.33s}
+}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
 @media (max-width:720px){
   .grid{grid-template-columns:1fr}
@@ -154,7 +158,7 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
 
 <header class="bar">
   <div class="wrap bar-in">
-    <a class="wordmark" href="#top">Franken<span class="dot">·</span>Sorter</a>
+    <a class="wordmark" href="#top">FrankenSorter</a>
     <nav class="bar-nav">
       <a class="navlink hide-sm" href="#how">how it works</a>
       <a class="navlink" href="https://github.com/zakiaminn/FrankenSorter">github</a>
@@ -168,25 +172,20 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
 
   <!-- HERO -->
   <div class="hero">
-    <div class="eyebrow">Python · Ollama · Local LLM · Desktop</div>
+    <div class="eyebrow">Python · local LLM desktop app</div>
     <h1 class="title">FrankenSorter
       <svg class="swipe" viewBox="0 0 320 24" preserveAspectRatio="none" aria-hidden="true">
         <path d="M6,17 C70,7 128,20 190,11 C240,4 288,15 314,9" fill="none" stroke="var(--brand)" stroke-width="9" stroke-linecap="round"/>
       </svg>
     </h1>
-    <p class="lede">a local ai file sorter — it reads your documents and files them away, all on your own machine.</p>
-    <p class="sub">no api key, no subscription, no upload. regex handles the obvious calls, a local model handles everything it can't pattern-match.</p>
+    <p class="lede">reads each document and files it under school, work, personal, or finance. locally, and nothing gets uploaded.</p>
     <div class="cta">
-      <a class="btn btn-fill" href="https://github.com/zakiaminn/FrankenSorter">view on github <span class="arw">→</span></a>
+      <a class="btn btn-fill" href="https://github.com/zakiaminn/FrankenSorter">view on github <span class="arw">&rarr;</span></a>
       <a class="btn btn-ghost" href="#how">see how it works</a>
     </div>
 
     <div class="demo">
       <div class="frame">
-        <div class="frame-bar">
-          <span class="dots"><i></i><i></i><i></i></span>
-          <span class="frame-name">FrankenSorter.py</span>
-        </div>
         <img src="assets/ssdemo.gif" alt="FrankenSorter sorting files into folders" width="700" loading="lazy">
       </div>
     </div>
@@ -195,7 +194,6 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
   <!-- FEATURES -->
   <section id="what">
     <div class="sec-head">
-      <span class="sec-num">01</span>
       <h2>what makes it work</h2>
     </div>
     <div class="grid">
@@ -205,11 +203,11 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
       </div>
       <div class="card">
         <div class="k">regex first, model second</div>
-        <p>a course code like <code>PROG23672</code> in the filename is school, full stop — the llm never even sees it. junk prefixes like <code>IMG</code> and <code>SCAN</code> are blocklisted so a photo doesn't read as a course.</p>
+        <p>a course code like <code>PROG23672</code> in the filename is school, full stop. the llm never even sees it. junk prefixes like <code>IMG</code> and <code>SCAN</code> are blocklisted so a photo doesn't read as a course.</p>
       </div>
       <div class="card">
         <div class="k">can't go off-script</div>
-        <p>the model answers against a json schema where the category is an enum, so it literally can't return a folder that doesn't exist. temperature's pinned to 0 — same file, same result, every time.</p>
+        <p>the model answers against a json schema where the category is an enum, so it literally can't return a folder that doesn't exist. temperature's pinned to 0, so the same file sorts the same way every time.</p>
       </div>
       <div class="card">
         <div class="k">reads real documents</div>
@@ -217,7 +215,7 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
       </div>
       <div class="card wide">
         <div class="k">the ui never freezes</div>
-        <p>built with customtkinter, and the sorting runs on a background thread so the window stays responsive. the stop button halts cleanly between files — nothing's ever left half-moved.</p>
+        <p>built with customtkinter, and the sorting runs on a background thread so the window stays responsive. the stop button halts cleanly between files, so nothing's ever left half-moved.</p>
       </div>
     </div>
   </section>
@@ -225,23 +223,19 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
   <!-- HOW IT WORKS -->
   <section id="how">
     <div class="sec-head">
-      <span class="sec-num">02</span>
       <h2>how it works</h2>
     </div>
     <div class="steps">
       <div class="step">
-        <div class="n">01 — extract</div>
-        <h3>read a peek</h3>
+        <h3>extract</h3>
         <p>grabs the first ~1200 characters of a file. enough to know what it is, small enough to not blow past the context window.</p>
       </div>
       <div class="step">
-        <div class="n">02 — analyze</div>
-        <h3>ask the model</h3>
-        <p>hands that text to qwen2.5 7b with the schema, gets back a category, a subject, and a cleaned-up name.</p>
+        <h3>analyze</h3>
+        <p>hands that text to qwen2.5 7b with the schema, and gets back a category, a subject, and a cleaned-up name.</p>
       </div>
       <div class="step">
-        <div class="n">03 — execute</div>
-        <h3>file it away</h3>
+        <h3>execute</h3>
         <p>makes the folder, renames to pascalcase, breaks any name collision with an epoch timestamp, and moves the file.</p>
       </div>
     </div>
@@ -250,26 +244,21 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
   <!-- SETUP -->
   <section id="setup">
     <div class="sec-head">
-      <span class="sec-num">03</span>
       <h2>get it running</h2>
     </div>
     <div class="setup-in">
-      <div class="frame-bar">
-        <span class="dots"><i></i><i></i><i></i></span>
-        <span class="frame-name">terminal</span>
-      </div>
-<pre><span class="c"># 1 · install ollama + pull the model</span>
+<pre><span class="c"># install ollama and pull the model</span>
 ollama pull qwen2.5:7b
 
-<span class="c"># 2 · clone + install the deps</span>
+<span class="c"># clone and install the deps</span>
 git clone https://github.com/zakiaminn/FrankenSorter.git
 <span class="p">cd</span> FrankenSorter
 pip install -r requirements.txt
 
-<span class="c"># 3 · run it</span>
+<span class="c"># run it</span>
 python3 FrankenSorter.py</pre>
     </div>
-    <p class="deps">deps: customtkinter · ollama · pdfplumber · python-docx · python-pptx · openpyxl</p>
+    <p class="deps">deps: customtkinter, ollama, pdfplumber, python-docx, python-pptx, openpyxl</p>
   </section>
 
 </div>
@@ -278,11 +267,11 @@ python3 FrankenSorter.py</pre>
   <div class="wrap foot">
     <div>
       <div class="by">Zaki Amin Ahmad</div>
-      <div class="meta">portfolio project · python + a local llm</div>
+      <div class="meta">portfolio project, python and a local llm</div>
     </div>
     <div class="foot-links">
-      <a class="chip" href="https://zakiamin.com">zakiamin.com ↗</a>
-      <a class="chip brand" href="https://github.com/zakiaminn/FrankenSorter">view source</a>
+      <a class="chip" href="https://zakiamin.com">zakiamin.com &#8599;</a>
+      <a class="chip brand" href="https://github.com/zakiaminn/FrankenSorter">view on github</a>
     </div>
   </div>
 </footer>
