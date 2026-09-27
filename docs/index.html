@@ -6,8 +6,16 @@
 <title>FrankenSorter, a local AI file sorter</title>
 <meta name="description" content="FrankenSorter is a privacy-first desktop app that reads your documents and files them away locally, using regex and a local LLM. No cloud, no upload.">
 <meta property="og:title" content="FrankenSorter, a local AI file sorter">
-<meta property="og:description" content="Reads your documents and files them away, all on your own machine. Regex for the obvious calls, a local model for the rest.">
+<meta property="og:description" content="Reads your documents and files them away, all on your own machine. A local model reads every file, and regex overrides it when the filename gives the answer away.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://zakiaminn.github.io/FrankenSorter/">
+<meta property="og:image" content="https://zakiaminn.github.io/FrankenSorter/assets/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="FrankenSorter wordmark over a list of documents sorted into school, finance, work, and personal folders">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://zakiaminn.github.io/FrankenSorter/">
 
 <style>
 /* ---- self-hosted brand fonts ------------------------------------------- */
@@ -205,8 +213,8 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
         <p>the model runs on your own machine through ollama. no rate limits, no subscription, nothing ever leaves the box.</p>
       </div>
       <div class="card">
-        <div class="k">regex first, model second</div>
-        <p>a course code like <code>PROG23672</code> in the filename is school, full stop. the llm never even sees it. junk prefixes like <code>IMG</code> and <code>SCAN</code> are blocklisted so a photo doesn't read as a course.</p>
+        <div class="k">regex overrides the model</div>
+        <p>every file gets the model's read, but regex has the final say on the calls it can prove. a course code like <code>PROG23672</code> in the filename is school, full stop, whatever the model thought. junk prefixes like <code>IMG</code> and <code>SCAN</code> are blocklisted so a photo doesn't read as a course.</p>
       </div>
       <div class="card">
         <div class="k">can't go off-script</div>
@@ -214,7 +222,7 @@ footer{border-top:1px solid var(--rule);padding:48px 0 60px;margin-top:20px}
       </div>
       <div class="card">
         <div class="k">reads real documents</div>
-        <p>pulls text from <code>.pdf</code>, <code>.docx</code>, <code>.pptx</code> and <code>.xlsx</code>, and shrugs off malformed files instead of crashing on them.</p>
+        <p>pulls text from <code>.pdf</code>, <code>.docx</code> and <code>.pptx</code>, plus sheet names from <code>.xlsx</code>, and shrugs off malformed files instead of crashing on them.</p>
       </div>
       <div class="card wide">
         <div class="k">the ui never freezes</div>
