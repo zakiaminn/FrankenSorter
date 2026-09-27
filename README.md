@@ -11,14 +11,14 @@
 
 point it at a folder full of random documents and it reads each one, works out whether it's school, work, personal, or finance, and files it into the right folder with a clean name. nothing leaves your machine. no api key, no subscription, no upload.
 
-it leans on regex for the obvious calls and a local language model (qwen2.5 7b through ollama) for everything it can't pattern-match.
+a local language model (qwen2.5 7b through ollama) reads each file and works out where it goes, and a regex layer overrides that call whenever the filename alone gives the answer away.
 
 ## what makes it work
 
 * **100% local.** the model runs on your own machine through ollama. no rate limits, no subscription, nothing gets uploaded.
-* **regex first, model second.** the obvious stuff never touches the llm. a course code like `PROG23672` in the filename is school, full stop. junk prefixes like `IMG` or `SCAN` are blocklisted so a photo doesn't read as a course code. everything regex can't call falls through to the model.
+* **regex overrides the model on the sure things.** every file gets the model's read, but a deterministic regex layer has the final say on the calls it can prove. a course code like `PROG23672` in the filename is school, full stop, whatever the model thought. junk prefixes like `IMG` or `SCAN` are blocklisted so a photo doesn't read as a course code.
 * **the model can't go off-script.** it answers against a json schema where the category is an enum, so it literally can't hand back a folder that doesn't exist. temperature's pinned to 0, so the same file sorts the same way every time. no digging a real answer out of conversational fluff.
-* **reads real documents.** pulls text from `.pdf`, `.docx`, `.pptx`, and `.xlsx`. handles malformed files without crashing (getattr's its way through the weird ones) and skips anything over 50mb so the app never hangs.
+* **reads real documents.** pulls text from `.pdf`, `.docx`, and `.pptx`, plus sheet names from `.xlsx`. handles malformed files without crashing (getattr's its way through the weird ones) and skips anything over 50mb so the app never hangs.
 * **the ui never freezes.** built with customtkinter, and the sorting runs on a background thread. the stop button halts cleanly between files, so nothing's ever left half-moved.
 
 ## setup

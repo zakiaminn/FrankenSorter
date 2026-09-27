@@ -405,10 +405,11 @@ class FrankenSorterApp(ctk.CTk):
             return None
 
     def get_ai_decision(self, filename, content):
-        """hybrid router: regex grabs the dead-obvious stuff instantly, then the
-        model handles the judgment calls. it's pinned to a json schema, so it
-        can't wander off and hand back a paragraph instead of an answer."""
-        # fast path, a real course code in the name is a school file, full stop,
+        """hybrid router: the model reads every file and makes the call, then
+        regex overrides it on the stuff it can prove. the model's pinned to a
+        json schema, so it can't wander off and hand back a paragraph instead
+        of an answer."""
+        # the sure thing, a real course code in the name is a school file, full stop,
         # and i trust that over whatever the model thinks. the catch: "scan0042"
         # and "IMG_1234" look exactly like course codes, so blocklist the usual
         # camera/scanner/generic junk prefixes before trusting the match.
@@ -424,8 +425,8 @@ class FrankenSorterApp(ctk.CTk):
         school_keywords = ["assignment", "rubric", "lecture", "homework", "math", "calculus", "course", "exam", "syllabus"]
         is_obvious_school = any(word in filename.lower() for word in school_keywords)
 
-        # slow path, hand the model the name plus a peek at the contents and let
-        # it reason about where the file actually belongs.
+        # every file still goes to the model, the name plus a peek at the
+        # contents, and it reasons about where the file actually belongs.
         system_prompt = (
             "You sort files into folders. Read the filename and the text sample, "
             "then decide where the file belongs based on what it's actually about, "
